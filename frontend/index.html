@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>P2P Chat</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial;
+            display: flex;
+            height: 100vh;
+        }
+
+        #sidebar {
+            width: 220px;
+            background: #222;
+            color: white;
+            padding: 15px;
+            overflow-y: auto;
+        }
+
+        #sidebar h2 {
+            margin-top: 0;
+        }
+
+        .peer {
+            padding: 8px;
+            margin: 5px 0;
+            background: #333;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .peer:hover {
+            background: #444;
+        }
+
+        #chat {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #messages {
+            flex: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background: #f7f7f7;
+        }
+
+        #inputBox {
+            display: flex;
+            padding: 10px;
+            background: #ddd;
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 10px;
+            font-size: 16px;
+        }
+
+        #sendBtn {
+            padding: 10px 15px;
+            font-size: 16px;
+            margin-left: 10px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="sidebar">
+        <h2>Peers</h2>
+        <div id="peerList"></div>
+    </div>
+
+    <div id="chat">
+        <div id="messages"></div>
+
+        <div id="inputBox">
+            <input id="messageInput" placeholder="Type message...">
+            <button id="sendBtn">Send</button>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>

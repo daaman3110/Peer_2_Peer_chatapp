@@ -4,8 +4,12 @@ from app.core.state import peers, state_lock
 import time
 
 
-class PeerDiscoveryProtocol:
+class PeerDiscoveryProtocol(asyncio.DatagramProtocol):
     """Peer Discovery Class which gets triggered when it sees the Discovery Message"""
+
+    def connection_made(self, transport):
+        self.transport = transport
+        print(f"[UDP] Listening on {UDP_PORT}")
 
     def datagram_received(self, data, addr):
         msg = data.decode()
@@ -22,7 +26,7 @@ async def update_peer(ip):
 
 
 async def listen_for_peers():
-    """ Listens for peers """
+    """Listens for peers"""
     # 1: Setting up an engine
     loop = asyncio.get_running_loop()
 
@@ -30,3 +34,10 @@ async def listen_for_peers():
     transport, protocol = await loop.create_datagram_endpoint(
         lambda: PeerDiscoveryProtocol(), local_addr=("0.0.0.0", UDP_PORT)
     )
+
+    # 3: Keep running forever
+    try:
+        while True:
+            await asyncio.sleep(1)
+    finally:
+        transport.close()

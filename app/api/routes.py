@@ -6,12 +6,12 @@ router = APIRouter()
 
 
 @router.get("/peers")
-def get_peers():
+async def get_peers():
     return peers
 
 
 @router.get("/messages")
-def get_messages():
+async def get_messages():
     return messages
 
 
