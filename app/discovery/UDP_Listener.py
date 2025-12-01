@@ -1,41 +1,36 @@
 import asyncio
+import socket
+import struct
 from app.config.config import UDP_PORT, DISCOVERY_MESSAGE
 from app.core.state import peers, state_lock
 import time
 
-
-class PeerDiscoveryProtocol(asyncio.DatagramProtocol):
-    """Peer Discovery Class which gets triggered when it sees the Discovery Message"""
-
-    def connection_made(self, transport):
-        self.transport = transport
-        print(f"[UDP] Listening on {UDP_PORT}")
-
-    def datagram_received(self, data, addr):
-        msg = data.decode()
-        ip = addr[0]
-
-        if msg == DISCOVERY_MESSAGE:
-            asyncio.create_task(update_peer(ip))
-
+MULTICAST_GROUP = "224.1.1.1"
 
 async def update_peer(ip):
-    """Update the Peer List with IP and Timestamp"""
     async with state_lock:
         peers[ip] = time.time()
 
+class PeerDiscoveryProtocol(asyncio.DatagramProtocol):
+    def datagram_received(self, data, addr):
+        if data.decode() == DISCOVERY_MESSAGE:
+            asyncio.create_task(update_peer(addr[0]))
 
 async def listen_for_peers():
-    """Listens for peers"""
-    # 1: Setting up an engine
     loop = asyncio.get_running_loop()
 
-    # 2: Listening
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM, socket.IPPROTO_UDP)
+    sock.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
+    sock.bind(("", UDP_PORT))
+
+    mreq = struct.pack("4sl", socket.inet_aton(MULTICAST_GROUP), socket.INADDR_ANY)
+    sock.setsockopt(socket.IPPROTO_IP, socket.IP_ADD_MEMBERSHIP, mreq)
+
     transport, protocol = await loop.create_datagram_endpoint(
-        lambda: PeerDiscoveryProtocol(), local_addr=("0.0.0.0", UDP_PORT)
+        lambda: PeerDiscoveryProtocol(),
+        sock=sock
     )
 
-    # 3: Keep running forever
     try:
         while True:
             await asyncio.sleep(1)
