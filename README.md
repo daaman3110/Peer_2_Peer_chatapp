@@ -85,7 +85,7 @@ BROADCAST_INTERVAL = 2       # Seconds between discovery broadcasts
    ```
    Or with Uvicorn directly:
    ```bash
-   uvicorn main:app --reload
+   uvicorn main:app --host 0.0.0.0 --port 8000
    ```
 
 4. **Open in browser**
