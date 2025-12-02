@@ -150,17 +150,3 @@ Initializes and schedules background tasks:
 ### `UDP_Broadcaster.py` & `UDP_Listener.py`
 - **Broadcaster**: Sends periodic discovery broadcasts to notify network presence
 - **Listener**: Receives discovery broadcasts and registers new peers
-
-## Known Limitations
-
-- Messages are stored in memory (lost on restart)
-- No message persistence or database
-- No authentication or encryption
-- Works best on local networks (limited by UDP broadcast scope)
-- Single-threaded per connection
-
-
-## 📝 License
-
-This project is open source and available under the MIT License.
-
